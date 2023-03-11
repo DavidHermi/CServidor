@@ -11,8 +11,8 @@ public class Servidor {
 
         private Socket socket;
         private ServerSocket serverSocket;
-        private DataInputStream bufferDeEntrada = null;
-        private DataOutputStream bufferDeSalida = null;
+        private DataInputStream EntradaDatos ;
+        private DataOutputStream SalidaDatos ;
         Scanner escaner = new Scanner(System.in);
         final String COMANDO_TERMINACION = "salir()";
 
@@ -29,9 +29,9 @@ public class Servidor {
         }
         public void flujos() {
             try {
-                bufferDeEntrada = new DataInputStream(socket.getInputStream());
-                bufferDeSalida = new DataOutputStream(socket.getOutputStream());
-                bufferDeSalida.flush();
+                EntradaDatos = new DataInputStream(socket.getInputStream());
+               SalidaDatos = new DataOutputStream(socket.getOutputStream());
+                SalidaDatos.flush();
             } catch (IOException e) {
                 mostrarTexto("Error en la apertura de flujos");
             }
@@ -41,7 +41,7 @@ public class Servidor {
             String st = "";
             try {
                 do {
-                    st = (String) bufferDeEntrada.readUTF();
+                    st = EntradaDatos.readUTF();
                     mostrarTexto("\n[Cliente] => " + st);
                     System.out.print("\n[Usted] => ");
                 } while (!st.equals(COMANDO_TERMINACION));
@@ -53,8 +53,8 @@ public class Servidor {
 
         public void enviar(String s) {
             try {
-                bufferDeSalida.writeUTF(s);
-                bufferDeSalida.flush();
+                SalidaDatos.writeUTF(s);
+                SalidaDatos.flush();
             } catch (IOException e) {
                 mostrarTexto("Error en enviar(): " + e.getMessage());
             }
@@ -73,8 +73,8 @@ public class Servidor {
 
         public void cerrarConexion() {
             try {
-                bufferDeEntrada.close();
-                bufferDeSalida.close();
+               EntradaDatos.close();
+                SalidaDatos.close();
                 socket.close();
             } catch (IOException e) {
                 mostrarTexto("Excepción en cerrarConexion(): " + e.getMessage());
@@ -104,7 +104,7 @@ public class Servidor {
         }
 
         public static void main(String[] args) throws IOException {
-           Servidor s = new Servidor();
+            Servidor s = new Servidor();
             Scanner sc = new Scanner(System.in);
 
             mostrarTexto("Ingresa el puerto [5050 por defecto]: ");
